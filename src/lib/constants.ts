@@ -3,7 +3,7 @@ export const COMPANY = {
   shortName: "KD Green",
   phone: "(813) 680-8203",
   phoneTel: "+18136808203",
-  email: "info@kdgreen.com",
+  email: "kdgreenmultiservices@gmail.com",
   tagline: "Roadside Assistance 24/7",
   usdot: "USDOT #9061199",
   area: "South Florida",

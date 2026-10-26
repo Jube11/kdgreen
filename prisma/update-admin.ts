@@ -1,22 +1,46 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import * as readline from "readline";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  const newEmail = process.argv[2];
-  const newPassword = process.argv[3];
-  const newName = process.argv[4] || "Admin";
+async function prompt(question: string, hidden: boolean = false): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
-  if (!newEmail || !newPassword) {
-    console.error("Usage: npx tsx prisma/update-admin.ts <newEmail> <newPassword> [newName]");
-    console.error("Example: npx tsx prisma/update-admin.ts boss@kdgreen.com StrongP@ssw0rd! 'KD Boss'");
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+async function main() {
+  let email = process.argv[2];
+  let password = process.argv[3];
+  let name = process.argv[4];
+
+  // If arguments not provided via CLI, interactively prompt to prevent shell variable expansion (like $0)
+  if (!email || !password) {
+    console.log("\n=== KD Green Admin Credential Setup ===");
+    email = await prompt("Enter admin email: ");
+    password = await prompt("Enter new password: ");
+    name = (await prompt("Enter name (optional, press Enter for Ken): ")) || "Ken";
+  }
+
+  if (!email || !password) {
+    console.error("Error: Email and password are required.");
     process.exit(1);
   }
 
-  const hashedPassword = await bcrypt.hash(newPassword, 12);
+  // Normalize email to lowercase
+  email = email.toLowerCase().trim();
 
-  // Check if any admin exists
+  const hashedPassword = await bcrypt.hash(password, 12);
+
   const existingAdmin = await prisma.admin.findFirst();
 
   let admin;
@@ -24,31 +48,33 @@ async function main() {
     admin = await prisma.admin.update({
       where: { id: existingAdmin.id },
       data: {
-        email: newEmail,
+        email,
         password: hashedPassword,
-        name: newName,
+        name: name || existingAdmin.name,
       },
     });
-    console.log(` Admin updated successfully!`);
   } else {
     admin = await prisma.admin.create({
       data: {
-        email: newEmail,
+        email,
         password: hashedPassword,
-        name: newName,
+        name: name || "Ken",
       },
     });
-    console.log(` Admin created successfully!`);
   }
 
-  console.log(`Email:    ${admin.email}`);
-  console.log(`Name:     ${admin.name}`);
-  console.log(`Password: (updated to your new password)`);
+  // Verify the hash right now
+  const verified = await bcrypt.compare(password, admin.password);
+
+  console.log("\n Credentials successfully updated!");
+  console.log(`Email:            ${admin.email}`);
+  console.log(`Name:             ${admin.name}`);
+  console.log(`Verification:     ${verified ? "Verified and ready to login" : "Failed"}\n`);
 }
 
 main()
   .catch((e) => {
-    console.error("Failed to update admin:", e);
+    console.error("Error updating credentials:", e);
     process.exit(1);
   })
   .finally(async () => {
