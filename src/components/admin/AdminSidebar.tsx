@@ -186,38 +186,38 @@ export default function AdminSidebar({ admin }: { admin: { name: string; email: 
     <>
       {/* Mobile Top Header */}
       <header
-        className="lg:hidden sticky top-0 z-40 border-b flex items-center justify-between px-4 h-15 backdrop-blur-md shrink-0 w-full"
+        className="lg:hidden sticky top-0 z-40 border-b flex items-center justify-between px-4 sm:px-6 h-16 sm:h-20 backdrop-blur-md shrink-0 w-full shadow-sm"
         style={{
-          backgroundColor: "color-mix(in srgb, var(--bg-card) 90%, transparent)",
+          backgroundColor: "color-mix(in srgb, var(--bg-card) 95%, transparent)",
           borderColor: "var(--border)",
         }}
       >
-        <Link href="/admin" className="flex items-center gap-2.5">
+        <Link href="/admin" className="flex items-center gap-3">
           <Image
             src="/logo.jpg"
             alt="KD Green"
-            width={32}
-            height={32}
-            className="rounded-lg object-cover"
+            width={40}
+            height={40}
+            className="rounded-xl object-cover shadow-sm"
           />
           <div className="flex flex-col leading-none">
             <span
-              className="text-sm font-black tracking-wider uppercase"
+              className="text-base font-black tracking-wider uppercase"
               style={{ color: "var(--text-primary)" }}
             >
               KD GREEN
             </span>
-            <span className="text-[9px] font-black tracking-[0.15em] uppercase text-emerald-500 mt-0.5">
-              ADMIN
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-emerald-500 mt-1">
+              DISPATCH ADMIN
             </span>
           </div>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <ThemeToggle />
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl border transition-colors"
+            className="p-2.5 rounded-xl border transition-all active:scale-95"
             style={{
               borderColor: "var(--border)",
               backgroundColor: "var(--bg-input)",
@@ -225,7 +225,7 @@ export default function AdminSidebar({ admin }: { admin: { name: string; email: 
             }}
             aria-label="Open menu"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
